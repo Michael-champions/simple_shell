@@ -19,8 +19,8 @@
 extern char **environ;
 
 /**
-  * struct builtin_commands - stuct for function pointers to builtin commands
-  * @cmd_str: commands (env, cd, alias, history)
+  * struct builtin_commands - stucture for function pointers to builtin commands
+  * @cmd_str: strings of commands (env, cd, alias, history)
   * @fun: function
   */
 typedef struct builtin_commands
