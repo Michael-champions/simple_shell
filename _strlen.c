@@ -1,10 +1,11 @@
 #include "main.h"
+#include <stdio.h>
 
 /**
- * _strlen - computes the length of a string
- * @str: The string
+ * _strlen - string length
+ * @str: pointer to the string
  *
- * Return: (int)
+ * Return: length
  */
 int _strlen(char *str)
 {
