@@ -99,4 +99,15 @@ int _atoi(char *s);
 char *c_ignore(char *str);
 void non_interactive(list_t *env);
 
-#endif
+
+
+/* get_line.c */
+void bring_line(char **lineptr, size_t *n, char *buffer, size_t j);
+
+ssize_t get_line(char **lineptr, size_t *n, FILE *stream);
+
+
+
+
+
+endif
