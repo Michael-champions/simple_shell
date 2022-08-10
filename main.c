@@ -1,14 +1,14 @@
 #include "shell.h"
 
 /**
- * main - main entry point of the program
+ * main - print messege here
+ *
  * @ac: number of arguments
  * @av: argument list
  * Return: 0 if successful
 */
 
-int main(void)
-	
+int main(void)	
 {
 	char *buffer, **commands;
 	list_t *linkedlist_path, *env_list;
