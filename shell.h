@@ -1,113 +1,82 @@
-#ifndef SHELL_H
-#define SHELL_H
-#include <signal.h>
-#include <stdlib.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/wait.h>
-#include <wait.h>
-#include <errno.h>
+#ifndef _SHELL_H_
+#define _SHELL_H_
+
 #include <fcntl.h>
-#include <dirent.h>
-#include <signal.h>
-
-#define BUFSIZE 1024
-extern char **environ;
-
-/**
-  * struct builtin_commands - stucture for function pointers to builtin commands
-  * @cmd_str: strings of commands (env, cd, alias, history)
-  * @fun: function
-  */
-typedef struct builtin_commands
-{
-	char *cmd_str;
-	int (*fun)();
-} builtin_t;
-
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 /**
- * struct env_path - linked list for environmental variables
- * @str: holds environmental variable string
- * @len: holds the length of the string
- * @next: points to next node
+ * struct shell_var - Struct shell_var
+ * @code: The exit code of last command
+ * @argc: The argument count of last command
+ * @pid: The shell process id
+ * @env: The environment varibles
+ * @name: The name of this shell
  */
-typedef struct env_path
+
+typedef struct shell_var
 {
-	char *str;
-	unsigned int len;
-	struct env_path *next;
+	int code;
+	int argc;
+	pid_t pid;
+	char **env;
+	char *name;
+} shell_var_t;
 
-} list_t;
-
-/* In builtin.c */
-int (*_builtin(char *cmd))();
-int _exit_builtin(char **tokens, list_t *linkedlist_path, char *buffer);
-int _cd(char **tokens);
-int _alias(void);
-int _history(void);
-
-/* env_func.c */
-char *_getenv(char *name);
-int _setenv(char **tokens);
-int _unsetenv(char **tokens);
-int current_env(char **tokens, list_t *environment);
-
-/* linkedlist.c */
-list_t *add_node(list_t **head, char *str, unsigned int len);
-list_t *path_list(void);
-list_t *environ_list(void);
-char *_which(char *cmd, list_t *linkedlist_path);
-void free_list(list_t *head);
-
-/* execute.c */
-int execute(char *argv[], list_t *linkedlist_path);
-char **split_line(char *line);
-void ctrl_D(int i, char *cammand, list_t *env);
-void ctrl_c(int n);
-
-/* memory.c */
-void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
-void free_double_ptr(char **str);
-void __exit(char **str, list_t *env);
-
-/* strings2.c*/
+int _strlen(char *str);
+char *_strcat(char *dest, const char *const src, int start);
 char *_strcpy(char *dest, char *src);
-int _putchar(char c);
-void _puts(char *str);
-int _isnumber(int c);
-int _strlen(char *s);
-
-/* strtok.c */
-char *_strchr(char *s, char c);
-unsigned int _strspn(char *s, char *accept);
-char *_strpbrk(char *s, char *delims);
-char *_strtok(char *s, char *delim);
-
-/* string1.c */
+void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
+char *_reverse_str(char *str);
+char *_trim_right(char *str);
+char *_trim_left(char *str);
+char *_trim(char *str);
+char *_strdup(char *str);
 int _strcmp(char *s1, char *s2);
-int _strncmp(char *s1, char *s2, size_t bytes);
-char *_strcat(char *dest, char *src);
-char *_strdup(char *src);
+void _freeargs(char **args);
+int execCmd(char *sh, char *cmd, char **args);
+char **parser(char *str, char *delim);
+char *getCmdPath(char *cmd);
+size_t prompt(char **str, int *mode);
+
+/**
+ * struct builtins - Struct builtins
+ * @name: The name of this command
+ * @cmd: The command function
+ */
+
+typedef struct builtins
+{
+	char *name;
+	int (*cmd)(char **args);
+} builtins_t;
+
+int _env(char **args __attribute__((unused)));
+int (*get_builtins(char *name))(char **);
+char *_tokenize(char *str, char *delim);
+int get_parsed_size(char *str, char *delim);
+int _strstart(char *s1, char *s2);
+extern char **environ;
+int argsize(char **args);
+int cd(char **args);
+int processcmd(char *str, shell_var_t *var);
+int processCmdSp(char *str, shell_var_t *var);
+int _delimcmp(char *str, char *delim);
+char *getLogicalOp(char *str, int start);
+int processLogical(char *str, shell_var_t *var);
+char *_getenv(char *k);
+int __exit(char **args __attribute__((unused)));
+int _isdigit(int c);
 int _atoi(char *s);
-
-/* non_interactive */
-char *c_ignore(char *str);
-void non_interactive(list_t *env);
-
-
-
-/* get_line.c */
-void bring_line(char **lineptr, size_t *n, char *buffer, size_t j);
-
-ssize_t get_line(char **lineptr, size_t *n, FILE *stream);
-
-
-
-
-
-endif
+char *removeComment(char *str);
+char *_itoa(int num);
+int num_len(int num);
+char *replace_var(char *s, shell_var_t *svar);
+char *getVar(char *key, shell_var_t *svar);
+int processFile(char *filename, char **str);
+#endif
