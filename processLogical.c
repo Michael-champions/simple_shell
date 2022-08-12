@@ -1,5 +1,8 @@
 #include "shell.h"
 
+
+
+
 /**
  * processLogical - Process logical operators
  * @str: The User input
@@ -7,6 +10,8 @@
  *
  * Return: 1 on success, 0 otherwise
  */
+
+
 int processLogical(char *str, shell_var_t *var)
 {
 	int done = 0, i = 0, pos = 0;
